@@ -1,0 +1,13 @@
+notifiers:
+  - name: Email
+    type: email
+    uid: notifier_duplicati
+    org_id: 1
+    is_default: false
+    send_reminder: "${NOTIFIER_EMAIL_REMINDER_ENABLE}"
+    frequency: "${NOTIFIER_EMAIL_REMINDER_FREQUENCY}"
+    disable_resolve_message: false
+    settings:
+      singleEmail: false
+      addresses: "${NOTIFIER_EMAIL_RECIPIENT}"
+      uploadImage: false

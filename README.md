@@ -26,6 +26,8 @@ Everything is already pre-configured and ready to be deployed.
 # Demo
 ![](./docs/img/demo.gif)
 
+> The right side of the video is not integrated in the dashboard. You can't control your backup with it.
+
 # Quick Start
 ### Running with docker-compose
 

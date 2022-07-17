@@ -1,8 +1,8 @@
 version: '2'
 services:      
   influxdb:
-    image: influxdb:2.0
-    #image: influxdb:2.0-alpine
+    image: influxdb:2.3.0
+    #image: influxdb:2.3.0-alpine
     volumes:
       - ./influxdb/data:/var/lib/influxdb2
       - ./influxdb/config:/etc/influxdb2
@@ -10,8 +10,8 @@ services:
       - ./config.env
 
   telegraf:
-    image: telegraf:1.18
-    #image: telegraf:1.18-alpine
+    image: telegraf:1.23.2
+    #image: telegraf:1.23.2-alpine
     ports: 
       - 8080:8080
     depends_on:
@@ -22,7 +22,7 @@ services:
       - ./config.env
  
   grafana:
-    image: grafana/grafana:7.5.2
+    image: grafana/grafana:7.5.16
     user: root
     ports: 
       - 3000:3000

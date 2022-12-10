@@ -1,8 +1,9 @@
+---
 apiVersion: 1
 providers:
   - name: 'Duplicati dashboard provisioning'
     orgId: 1
-    folder: ''
+    folder: 'Duplicati'
     folderUid: ''
     type: file
     disableDeletion: false
@@ -10,4 +11,3 @@ providers:
     allowUiUpdates: false
     options:
       path: /etc/grafana/provisioning/dashboards
-      foldersFromFilesStructure: true

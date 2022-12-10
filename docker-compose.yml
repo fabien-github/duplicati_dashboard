@@ -23,7 +23,7 @@ services:
       - ./config.env
 
   grafana:
-    image: grafana/grafana:7.5.17
+    image: grafana/grafana-oss:9.3.1
     user: root
     ports:
       - 3000:3000

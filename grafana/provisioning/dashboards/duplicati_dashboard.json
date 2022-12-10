@@ -3,25 +3,36 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1617291538344,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -30,11 +41,23 @@
       },
       "id": 42,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Last reported status",
       "type": "row"
     },
     {
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "description": "over last 30 days",
       "fieldConfig": {
         "defaults": {
@@ -43,28 +66,18 @@
           },
           "mappings": [
             {
-              "from": "",
-              "id": 1,
-              "text": "Failure",
-              "to": "",
-              "type": 1,
-              "value": "0"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "Success",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Warning",
-              "to": "",
-              "type": 1,
-              "value": "2"
+              "options": {
+                "0": {
+                  "text": "Failure"
+                },
+                "1": {
+                  "text": "Success"
+                },
+                "2": {
+                  "text": "Warning"
+                }
+              },
+              "type": "value"
             }
           ],
           "thresholds": {
@@ -93,13 +106,11 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 1
       },
       "id": 8,
-      "interval": null,
-      "maxDataPoints": null,
       "maxPerRow": 8,
       "options": {
         "colorMode": "background",
@@ -119,11 +130,15 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "9.2.3",
       "repeat": "Backup",
       "repeatDirection": "h",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
           "groupBy": [
             {
               "params": [
@@ -160,8 +175,6 @@
           "tags": []
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$Backup",
       "transformations": [
         {
@@ -172,7 +185,10 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -181,7 +197,8 @@
           "custom": {
             "align": "center",
             "displayMode": "auto",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -273,12 +290,12 @@
                 "id": "mappings",
                 "value": [
                   {
-                    "from": "",
-                    "id": 1,
-                    "text": "",
-                    "to": "",
-                    "type": 1,
-                    "value": ""
+                    "options": {
+                      "": {
+                        "text": ""
+                      }
+                    },
+                    "type": "value"
                   }
                 ]
               }
@@ -358,10 +375,17 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 7
       },
       "id": 4,
       "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "frameIndex": 5,
         "showHeader": true,
         "sortBy": [
@@ -371,9 +395,13 @@
           }
         ]
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
           "groupBy": [
             {
               "params": [
@@ -390,7 +418,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "import \"strings\"\r\nimport \"influxdata/influxdb/schema\"\r\n\r\nfrom(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"duplicati\")\r\n  |> filter(fn: (r) => r[\"backup-name\"] =~ /^${Backup:pipe}/)\r\n  |> toString()\r\n  |> schema.fieldsAsCols()\r\n  |> keep(columns: [\"_time\", \"backup-name\", \"ParsedResult\", \"Message\", \"Duration\", \"BeginTime\", \"EndTime\", \"SizeOfExaminedFiles\"])\r\n  |> map(fn:(r) => ({ r with ParsedResult: if r.ParsedResult == \"Success\" then string(v: \"Success\") else if r.ParsedResult == \"Warning\" then string(v: \"Warning\") else string(v: \"Failure\") }))\r\n  |> map(fn:(r) => ({ r with Duration: if exists r.Duration then strings.substring(v: r.Duration, start: 0, end: 8) else string(v: \"\") }))",
+          "query": "import \"experimental\"\r\nimport \"strings\"\r\nfrom(bucket: \"telegraf\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"duplicati\")\r\n  |> toString()\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({r with \"backup-name\": r[\"backup-name\"], \"BackupName\": string(v: r[\"backup-name\"])}))\r\n  |> keep(columns: [\"_time\", \"BackupName\", \"ParsedResult\", \"Message\", \"Duration\", \"BeginTime\", \"EndTime\", \"SizeOfExaminedFiles\"])\r\n  |> map(fn:(r) => ({ r with ParsedResult: if r.ParsedResult == \"Success\" then string(v: \"Success\") else if r.ParsedResult == \"Warning\" then string(v: \"Warning\") else string(v: \"Failure\") }))\r\n  |> map(fn:(r) => ({ r with Duration: if exists r.Duration then strings.substring(v: r.Duration, start: 0, end: 8) else string(v: \"\") }))\r\n  |> filter(fn: (r) => r[\"BackupName\"] =~ /^${Backup:pipe}/)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -413,22 +441,18 @@
       "title": "Logs",
       "transformations": [
         {
-          "id": "merge",
-          "options": {}
-        },
-        {
           "id": "organize",
           "options": {
             "excludeByName": {},
             "indexByName": {
+              "BackupName": 1,
               "BeginTime": 6,
               "Duration": 5,
               "EndTime": 7,
               "Message": 4,
               "ParsedResult": 2,
               "SizeOfExaminedFiles": 3,
-              "_time": 0,
-              "backup-name": 1
+              "_time": 0
             },
             "renameByName": {
               "BeginTime": "Backup started at",
@@ -446,17 +470,23 @@
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 23
       },
       "id": 32,
       "panels": [
         {
-          "datasource": null,
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
           "description": "over last 30 days",
           "fieldConfig": {
             "defaults": {
@@ -479,9 +509,9 @@
           },
           "gridPos": {
             "h": 3,
-            "w": 4,
+            "w": 3,
             "x": 0,
-            "y": 21
+            "y": 24
           },
           "id": 34,
           "maxPerRow": 8,
@@ -500,11 +530,15 @@
             "text": {},
             "textMode": "value_and_name"
           },
-          "pluginVersion": "7.5.2",
+          "pluginVersion": "9.2.3",
           "repeat": "Backup",
           "repeatDirection": "h",
           "targets": [
             {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "z8qxnDuGz"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -541,6 +575,10 @@
               "tags": []
             },
             {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "z8qxnDuGz"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -578,6 +616,10 @@
               "tags": []
             },
             {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "z8qxnDuGz"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -615,46 +657,58 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "$Backup",
           "transformations": [],
           "type": "stat"
         }
       ],
-      "repeat": null,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Last reported variations",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 24
       },
       "id": 6,
       "panels": [
         {
-          "datasource": null,
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
               "custom": {
-                "align": null,
-                "filterable": false
+                "displayMode": "auto",
+                "filterable": false,
+                "inspect": false
               },
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -783,10 +837,17 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 22
+            "y": 25
           },
           "id": 2,
           "options": {
+            "footer": {
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
             "showHeader": true,
             "sortBy": [
               {
@@ -795,11 +856,15 @@
               }
             ]
           },
-          "pluginVersion": "7.5.2",
+          "pluginVersion": "9.2.3",
           "repeat": "Backup",
           "repeatDirection": "v",
           "targets": [
             {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "z8qxnDuGz"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -836,8 +901,6 @@
               "tags": []
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Stats : ${Backup}",
           "transformations": [
             {
@@ -849,37 +912,37 @@
               "options": {
                 "excludeByName": {},
                 "indexByName": {
-                  "Time": 0,
-                  "ParsedResult": 1,
-                  "Message": 2,
-                  "SizeOfExaminedFiles": 3,
-                  "SizeOfOpenedFiles": 4,
-                  "SizeOfModifiedFiles": 5,
-                  "ExaminedFiles": 6,
-                  "BeginTime": 7,
-                  "EndTime": 8,
-                  "Duration": 9,
                   "AddedFiles": 10,
                   "AddedFolders": 11,
                   "AddedSymlinks": 12,
-                  "SizeOfAddedFiles": 13,
-                  "ModifiedFiles": 14,
-                  "ModifiedFolders": 15,
-                  "ModifiedSymlinks": 16,
+                  "BeginTime": 7,
                   "DeletedFiles": 17,
                   "DeletedFolders": 18,
                   "DeletedSymlinks": 19,
+                  "Dryrun": 27,
+                  "Duration": 9,
+                  "EndTime": 8,
                   "ErrorsActualLength": 20,
+                  "ExaminedFiles": 6,
                   "FilesWithError": 21,
+                  "MainOperation": 28,
+                  "Message": 2,
                   "MessagesActualLength": 22,
+                  "ModifiedFiles": 14,
+                  "ModifiedFolders": 15,
+                  "ModifiedSymlinks": 16,
                   "NotProcessedFiles": 23,
                   "OpenedFiles": 24,
-                  "TooLargeFiles": 25,
-                  "WarningsActualLength": 26,
-                  "Dryrun": 27,
-                  "MainOperation": 28,
+                  "ParsedResult": 1,
                   "PartialBackup": 29,
-                  "Version": 30
+                  "SizeOfAddedFiles": 13,
+                  "SizeOfExaminedFiles": 3,
+                  "SizeOfModifiedFiles": 5,
+                  "SizeOfOpenedFiles": 4,
+                  "Time": 0,
+                  "TooLargeFiles": 25,
+                  "Version": 30,
+                  "WarningsActualLength": 26
                 },
                 "renameByName": {}
               }
@@ -888,18 +951,29 @@
           "type": "table"
         }
       ],
-      "repeat": null,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Detailed stats",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": null,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "z8qxnDuGz"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 25
       },
       "id": 167,
       "panels": [
@@ -948,10 +1022,9 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
           },
           "fill": 0,
           "fillGradient": 0,
@@ -959,7 +1032,7 @@
             "h": 5,
             "w": 24,
             "x": 0,
-            "y": 23
+            "y": 26
           },
           "hiddenSeries": false,
           "id": 169,
@@ -983,17 +1056,20 @@
             "alertThreshold": false
           },
           "percentage": false,
-          "pluginVersion": "7.5.2",
+          "pluginVersion": "9.2.3",
           "pointradius": 0.5,
           "points": false,
           "renderer": "flot",
-          "repeat": null,
           "seriesOverrides": [],
           "spaceLength": 10,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "type": "influxdb",
+                "uid": "z8qxnDuGz"
+              },
               "groupBy": [
                 {
                   "params": [
@@ -1040,9 +1116,7 @@
               "visible": true
             }
           ],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Alerting graph",
           "tooltip": {
             "shared": true,
@@ -1052,9 +1126,7 @@
           "transformations": [],
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": false,
             "values": []
           },
@@ -1063,7 +1135,6 @@
               "$$hashKey": "object:157",
               "decimals": 0,
               "format": "none",
-              "label": null,
               "logBase": 1,
               "max": "1",
               "min": "0",
@@ -1072,25 +1143,30 @@
             {
               "$$hashKey": "object:158",
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "z8qxnDuGz"
+          },
+          "refId": "A"
         }
       ],
       "title": "Alerting graph",
       "type": "row"
     }
   ],
-  "refresh": "10s",
-  "schemaVersion": 27,
+  "refresh": "30s",
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [
     "Duplicati"
@@ -1108,13 +1184,13 @@
             "$__all"
           ]
         },
-        "datasource": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "z8qxnDuGz"
+        },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: -90d)\r\n  |> filter(fn: (r) => true)\r\n  |> toString()\r\n  |> group(columns: [\"backup-name\"])\r\n  |> distinct(column: \"backup-name\")\r\n  |> keep(columns: [\"_value\"])",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Backup",
         "options": [],
@@ -1124,7 +1200,6 @@
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1136,13 +1211,13 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": null,
+        "datasource": {
+          "type": "influxdb",
+          "uid": "z8qxnDuGz"
+        },
         "definition": "import \"influxdata/influxdb/schema\"\r\n\r\nschema.measurementFieldKeys(\r\n  bucket: v.defaultBucket,\r\n  measurement: \"duplicati\"\r\n)\r\n",
-        "description": null,
-        "error": null,
         "hide": 2,
         "includeAll": true,
-        "label": null,
         "multi": false,
         "name": "Measurement",
         "options": [],
@@ -1152,7 +1227,6 @@
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1167,5 +1241,6 @@
   "timezone": "",
   "title": "Duplicati Dashboard",
   "uid": "ltaGTeQDz672",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

@@ -1,5 +1,7 @@
 # Duplicati Dashboard
 
+**Breaking changes -> Migration to [v2](https://github.com/fabien-github/duplicati_dashboard/releases/tag/v1.0.0)**
+
 Duplicati Dashboard is a monitoring solution for [Duplicati](https://www.duplicati.com/).
 
 It allows you to monitor your backups status, collects stats for each reports and alerts you by email when a backup fails. It is intended to be self-hosted and works with [docker-compose](https://docs.docker.com/compose/).
@@ -87,7 +89,7 @@ Influxdb variable will create and setup the database only on the first startup.
 |GF_SMTP_FROM_ADDRESS|admin@grafana.localhost|Address used when sending out emails
 |GF_SMTP_EHLO_IDENTITY|${HOSTNAME}|Name to be used as client identity for EHLO in SMTP dialog (Default will be the container ID)
 |GF_SMTP_STARTTLS_POLICY||“OpportunisticStartTLS”, “MandatoryStartTLS”, “NoStartTLS”
-|NOTIFIER_EMAIL_RECIPIENT|example@example.com|Recipients for email notification (separated by a comma)
+|NOTIFIER_EMAIL_RECIPIENT|example@example.com|Recipients for email notification (separated by a semicolon)
 |NOTIFIER_EMAIL_REMINDER_ENABLE|true|Re-send an email if alerts are still active
 |NOTIFIER_EMAIL_REMINDER_FREQUENCY|2h|Delay between email reminders
 

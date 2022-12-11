@@ -1,0 +1,26 @@
+---
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: Duplicati_Dashboard_Email
+    receivers:
+      - uid: email_DB28BD9P3
+        type: email
+        settings:
+          singleEmail: false
+          addresses: ${NOTIFIER_EMAIL_RECIPIENT}
+          subject: |
+            [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+          message: |
+            Reporting {{ .Alerts | len }} alert{{ if gt (len .Alerts) 1 }}s{{ end }}
+
+            {{ if gt (len .Alerts.Firing) 0 }}Firing Alert(s) | One of your backups reports an unsuccessful job and triggers an alert.
+
+            Name :{{ end }}{{ range .Alerts.Firing }}
+            - {{ index .Labels "backup-name" }}{{ end }}
+
+            {{ if gt (len .Alerts.Resolved) 0 }}Resolved Alert(s) | One of your backups reports a successful job and resolved an alert.
+
+            Name :{{ end }}{{ range .Alerts.Resolved }}
+            - {{ index .Labels "backup-name" }}{{ end }}

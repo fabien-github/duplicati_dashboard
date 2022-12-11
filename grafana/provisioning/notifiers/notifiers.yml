@@ -1,3 +1,4 @@
+---
 notifiers:
   - name: Email
     type: email

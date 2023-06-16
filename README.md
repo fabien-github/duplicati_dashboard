@@ -128,6 +128,9 @@ from(bucket: v.defaultBucket)
   |> range(start: -30d)
   ...
 ```
+
+- In [v2](https://github.com/fabien-github/duplicati_dashboard/releases/tag/v1.0.0), alerts have their own provisioning file and query range can be edited [here](https://github.com/fabien-github/duplicati_dashboard/blob/3e1d558d54c6b3ecbb7ed67627a812c5dd060f31/grafana/provisioning/alerting/duplicati_alert.yml#L30).
+
 ## Alerting graph
 
 The section "Alerting graph" is only used to trigger an alert when a backup fails. This is due to the lack of grafana alert support on other panel type. [#6983](https://github.com/grafana/grafana/issues/6983)

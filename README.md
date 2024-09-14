@@ -1,7 +1,5 @@
 # Duplicati Dashboard
 
-**Breaking changes -> Migration to [v2](https://github.com/fabien-github/duplicati_dashboard/releases/tag/v1.0.0)**
-
 Duplicati Dashboard is a monitoring solution for [Duplicati](https://www.duplicati.com/).
 
 It allows you to monitor your backups status, collects stats for each reports and alerts you by email when a backup fails. It is intended to be self-hosted and works with [docker-compose](https://docs.docker.com/compose/).

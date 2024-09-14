@@ -11,8 +11,8 @@ services:
       - ./config.env
 
   telegraf:
-    image: telegraf:1.30
-    # image: telegraf:1.30-alpine
+    image: telegraf:1.32
+    # image: telegraf:1.32-alpine
     ports:
       - 8080:8080
     depends_on:
@@ -23,7 +23,7 @@ services:
       - ./config.env
 
   grafana:
-    image: grafana/grafana-oss:10.4.2
+    image: grafana/grafana-oss:11.2.0
     user: root
     ports:
       - 3000:3000
